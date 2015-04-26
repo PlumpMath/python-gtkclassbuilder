@@ -1,14 +1,7 @@
-import xml.etree.ElementTree as et
-from mkclass import make_class
-import mkclass
+from gtkclassbuilder import from_filename
 from gi.repository import Gtk
 
-tree = et.parse('test.glade')
-root = tree.getroot()
-mkclass.check(root)
-obj = list(root)[1]
-
-cls = make_class(obj)
+cls = from_filename('test.glade')
 
 w1 = cls()
 w2 = cls()
