@@ -1,0 +1,2 @@
+* pydoc doesn't pick up public functions from gtkclassbuilder.__init__, because
+  they're imported from sub-modules.
