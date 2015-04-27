@@ -1,2 +1,4 @@
 * pydoc doesn't pick up public functions from gtkclassbuilder.__init__, because
   they're imported from sub-modules.
+* docs are a bit confusing when talking about the child elements of "<child>"
+  elements; we should find a clearer way to talk about this.
