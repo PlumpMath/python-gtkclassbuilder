@@ -16,7 +16,10 @@ def from_filename(filename):
 
 def _from_tree(tree):
     """Build a class from an element tree."""
-    root = tree.getroot()
+    if isinstance(tree, ET.Element):
+        root = tree
+    else:
+        root = tree.getroot()
     check_interface(root)
     for child in root:
         if child.tag == 'object':
