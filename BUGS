@@ -2,3 +2,5 @@
   they're imported from sub-modules.
 * docs are a bit confusing when talking about the child elements of "<child>"
   elements; we should find a clearer way to talk about this.
+* setup.py is missing a dependency on gtk. should figure out what the right
+  package name is and add it.
