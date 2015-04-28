@@ -45,6 +45,8 @@ def interface(elt):
 
 def _object(elt):
     _check_attrs(elt, ['id', 'class'])
+    _or_raise(elt.attrib['class'].startswith('Gtk'),
+              BadInput("Object has non Gtk class: %r" % elt.attrib['class']))
     for child in elt:
         if child.tag == 'property':
             _property(child)
