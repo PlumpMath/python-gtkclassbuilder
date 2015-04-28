@@ -28,11 +28,14 @@ def _from_tree(tree):
 
 def _build_class(elt):
     props = {}
+    signals = {}
     children = []
 
     for child in elt:
         if child.tag == 'property':
             props[_prop_key(child)] = _prop_val(child)
+        elif child.tag == 'signal':
+            signals[child.attrib['handler']] = child.attrib['name']
         elif child.tag == 'child':
             obj = child[0]
             if len(child) > 1:
@@ -51,11 +54,21 @@ def _build_class(elt):
 
         def __init__(self):
             ParentClass.__init__(self, **props)
+            self._children = []
             for ChildClass, pack_props in children:
                 child = ChildClass()
+                self._children.append(child)
                 self.add(child)
                 for propname in pack_props.keys():
                     self.child_set_property(child, propname, pack_props[propname])
+
+        def connect_signals(self, handlers):
+            for handler_name in signals.keys():
+                if hasattr(handlers, handler_name):
+                    self.connect(signals[handler_name],
+                                 getattr(handlers, handler_name))
+            for child in self._children:
+                child.connect_signals(handlers)
 
     ResultClass.__name__ = elt.attrib['id']
     return ResultClass

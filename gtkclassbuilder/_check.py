@@ -44,7 +44,7 @@ def interface(elt):
 
 
 def _object(elt):
-    _check_attrs(elt, ['id', 'class'])
+    _check_attrs(elt, ['id', 'class'], ['signal'])
     _or_raise(elt.attrib['class'].startswith('Gtk'),
               BadInput("Object has non Gtk class: %r" % elt.attrib['class']))
     for child in elt:
@@ -52,9 +52,8 @@ def _object(elt):
             _property(child)
         elif child.tag == 'child':
             _child(child)
-        else:
-            logger.warn('Unrecognized child element of object: %r' %
-                         child.tag)
+        elif child.tag == 'signal':
+            _signal(child)
 
 
 def _property(elt):
@@ -63,6 +62,10 @@ def _property(elt):
     _or_raise(len(list(elt)) == 0, BadInput("Property with non-text child"))
     _or_raise(len(list(elt.itertext())) == 1,
               BadInput("Property with more than one child"))
+
+
+def _signal(elt):
+    _check_attrs(elt, ['name', 'handler'])
 
 
 def _child(elt):

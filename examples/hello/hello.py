@@ -7,7 +7,14 @@ cls = from_filename(path.join(path.dirname(__file__), 'hello.glade'))
 w1 = cls()
 w2 = cls()
 
+
+class Handlers(object):
+
+    def goodbye(self, *args, **kwargs):
+        Gtk.main_quit()
+
 w1.connect('delete-event', Gtk.main_quit)
+w2.connect_signals(Handlers())
 
 w1.show_all()
 w2.show_all()

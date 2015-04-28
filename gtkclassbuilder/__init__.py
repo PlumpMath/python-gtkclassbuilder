@@ -28,6 +28,9 @@ glade files conform to the following restrictions:
     * If a ``<child>`` has more than one child, the second child must be
       ``<packing>`` element.
     * ``<packing>`` elements may only contain ``<property>`` elements
+    * Each ``signal`` element must have both a ``name`` and a ``handler``
+      attribute. Signals are only interpreted when they are the children
+      ``<object>`` elements.
 
 Note that some of these may be true of all ``.glade`` files; indeed many of
 them probably are. The author of this package has not investigated exactly
