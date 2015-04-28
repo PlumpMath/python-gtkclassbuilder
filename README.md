@@ -13,4 +13,4 @@ This is still very WIP, and not really usable as of yet.
 
 # License
 
-LGPL 2.1 (The same as Gtk). See `COPYING`
+LGPL 2.1 or later (The same as Gtk). See `COPYING`
