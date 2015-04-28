@@ -45,7 +45,7 @@ def _build_class(elt):
                 pack_props[_prop_key(prop)] = _prop_val(prop)
             children.append((ChildClass, pack_props))
 
-    ParentClass = getattr(Gtk, elt.attrib['class'][3:])
+    ParentClass = getattr(Gtk, elt.attrib['class'][len("Gtk"):])
 
     class ResultClass(ParentClass):
 
