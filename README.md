@@ -9,7 +9,9 @@ To get another one, you have to process the file all over again.
 `python-gtkclassbuilder` on the other hand, constructs a class, which 
 like any other widget class, may be instantiated multiple times.
 
-This is still very WIP, and not really usable as of yet.
+This is still very WIP, but it's possible to do basic things.
+
+See the `examples/` directory for a taste of the api.
 
 # License
 
