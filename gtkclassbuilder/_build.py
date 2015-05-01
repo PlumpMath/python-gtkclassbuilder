@@ -5,28 +5,42 @@ from gtkclassbuilder._check import interface as check_interface
 
 
 def from_string(input):
-    """Parse the string input as a glade file, and return a corresponding class."""
+    """Generate classes from the string ``input``
+
+    Returns a dict mapping the id attributes of elements to the corresponding
+    generated classes.
+    """
     return _from_tree(ET.fromstring(input))
 
 
 def from_filename(filename):
-    """Read the glade file ``filename`` and return a corresponding class."""
+    """Generate classes from the glade file named ``filename``
+
+    Returns a dict mapping the id attributes of elements to the corresponding
+    generated classes.
+    """
     return _from_tree(ET.parse(filename))
 
 
 def _from_tree(tree):
-    """Build a class from an element tree."""
+    """Build classes from an element tree.
+
+    Returns a dict mapping the id attributes of elements to the corresponding
+    generated classes.
+    """
     if isinstance(tree, ET.Element):
         root = tree
     else:
         root = tree.getroot()
+    idents = {}
     check_interface(root)
     for child in root:
         if child.tag == 'object':
-            return _build_class(child)
+            _build_class(child, idents)
+    return idents
 
 
-def _build_class(elt):
+def _build_class(elt, cls_idents):
     props = {}
     signals = {}
     children = []
@@ -42,7 +56,7 @@ def _build_class(elt):
                 pack_elts = child[1]
             else:
                 pack_elts = []
-            ChildClass = _build_class(obj)
+            ChildClass = _build_class(obj, cls_idents)
             pack_props = {}
             for prop in pack_elts:
                 pack_props[_prop_key(prop)] = _prop_val(prop)
@@ -52,15 +66,22 @@ def _build_class(elt):
 
     class ResultClass(ParentClass):
 
-        def __init__(self):
+        def __init__(self, obj_idents=None):
+            if obj_idents is None:
+                obj_idents = {}
+            self.obj_idents = obj_idents
+            self.obj_idents[type(self).__name__] = self
             ParentClass.__init__(self, **props)
             self._children = []
             for ChildClass, pack_props in children:
-                child = ChildClass()
+                child = ChildClass(obj_idents=self.obj_idents)
                 self._children.append(child)
                 self.add(child)
                 for propname in pack_props.keys():
                     self.child_set_property(child, propname, pack_props[propname])
+
+        def get_object(self, ident):
+            return self.obj_idents[ident]
 
         def connect_signals(self, handlers):
             for handler_name in signals.keys():
@@ -71,6 +92,7 @@ def _build_class(elt):
                 child.connect_signals(handlers)
 
     ResultClass.__name__ = elt.attrib['id']
+    cls_idents[ResultClass.__name__] = ResultClass
     return ResultClass
 
 

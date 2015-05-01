@@ -45,5 +45,5 @@ input = """<?xml version="1.0" encoding="UTF-8"?>
 </interface>
 """
 
-cls = from_string(input)
-assert isinstance(cls(), Gtk.Window)
+classes = from_string(input)
+assert isinstance(classes['MainWindow'](), Gtk.Window)
