@@ -46,4 +46,13 @@ input = """<?xml version="1.0" encoding="UTF-8"?>
 """
 
 classes = from_string(input)
-assert isinstance(classes['MainWindow'](), Gtk.Window)
+w = classes['MainWindow']()
+
+assert isinstance(w, Gtk.Window)
+assert w.get_object('MainWindow') is w
+assert isinstance(w.get_object('box1'), classes['box1'])
+
+w2 = classes['MainWindow']()
+
+assert w is not w2
+assert w.get_object('box1') is not w2.get_object('box1')
