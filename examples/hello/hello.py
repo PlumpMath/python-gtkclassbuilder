@@ -2,7 +2,8 @@ from gtkclassbuilder import from_filename
 from gi.repository import Gtk
 from os import path
 
-cls = from_filename(path.join(path.dirname(__file__), 'hello.glade'))
+classes = from_filename(path.join(path.dirname(__file__), 'hello.glade'))
+cls = classes['MainWindow']
 
 w1 = cls()
 w2 = cls()
