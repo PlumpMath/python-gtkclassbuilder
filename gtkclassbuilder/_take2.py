@@ -137,6 +137,10 @@ def do_interface(elt, idents):
 
 
 def do_object(elt, idents):
+    """Process the <object> element, generating a class.
+
+    The class is stored in `idents` under it's id, and also returned.
+    """
     module_name, class_name = _namespace_split(elt.attrib['class'])
     module = importlib.import_module('gi.repository.' + module_name)
     parent_class = getattr(module, class_name)
@@ -169,6 +173,7 @@ def do_object(elt, idents):
 
     result.__name__ = object_id
     idents[object_id] = result
+    return result
 
 
 def do_child(elt, children, idents):
@@ -186,7 +191,7 @@ def do_child(elt, children, idents):
             obj_elt = xml_child
         elif xml_child.tag == 'packing':
             packing_elt = xml_child
-    obj_class = do_object(obj_elt)
+    obj_class = do_object(obj_elt, idents)
 
     child_properties = {}
     if packing_elt is not None:
