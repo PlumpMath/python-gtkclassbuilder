@@ -1,7 +1,7 @@
 import re
 import importlib
 import logging
-from ._check import interface as check_interface
+from . import _check
 
 logger = logging.getLogger(__name__)
 
@@ -69,7 +69,7 @@ def build_classes(elt):
     Returns a dictionary mapping names (ids in the glade file) to classes.
     """
     idents = {}
-    check_interface(elt)
+    _check.interface(elt)
     do_interface(elt, idents)
     return idents
 
