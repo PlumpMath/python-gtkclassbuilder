@@ -79,6 +79,10 @@ class _BuiltClass(object):
             for k, v in props.items():
                 self.child_set_property(child, k, v)
 
+    def get_object(self, name):
+        """Return the object specified by `name`."""
+        return self.objects[name]
+
 
 def build_classes(elt):
     """Build classes from `elt`.
