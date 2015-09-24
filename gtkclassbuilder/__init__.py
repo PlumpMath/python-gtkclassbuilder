@@ -36,5 +36,37 @@ what a valid ``.glade`` file may contain.
 Unless otherwise specified, any additional elements and/or attributes will
 be ignored, and a warning will be logged.
 """
-from gtkclassbuilder._build import from_string, from_filename
-from gtkclassbuilder._check import BadInput
+
+from . import _take2
+import xml.etree.ElementTree as ET
+
+
+def _from_tree(tree):
+    """Build classes from an element tree.
+
+    Returns a dict mapping the id attributes of elements to the corresponding
+    generated classes.
+    """
+    if isinstance(tree, ET.Element):
+        root = tree
+    else:
+        root = tree.getroot()
+    return _take2.build_classes(root)
+
+
+def from_string(input):
+    """Generate classes from the string ``input``
+
+    Returns a dict mapping the id attributes of elements to the corresponding
+    generated classes.
+    """
+    return _from_tree(ET.fromstring(input))
+
+
+def from_filename(filename):
+    """Generate classes from the glade file named ``filename``
+
+    Returns a dict mapping the id attributes of elements to the corresponding
+    generated classes.
+    """
+    return _from_tree(ET.parse(filename))

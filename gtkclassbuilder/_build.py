@@ -1,43 +1,7 @@
 from gi.repository import Gtk
-import xml.etree.ElementTree as ET
 
 from gtkclassbuilder._check import interface as check_interface
 
-
-def from_string(input):
-    """Generate classes from the string ``input``
-
-    Returns a dict mapping the id attributes of elements to the corresponding
-    generated classes.
-    """
-    return _from_tree(ET.fromstring(input))
-
-
-def from_filename(filename):
-    """Generate classes from the glade file named ``filename``
-
-    Returns a dict mapping the id attributes of elements to the corresponding
-    generated classes.
-    """
-    return _from_tree(ET.parse(filename))
-
-
-def _from_tree(tree):
-    """Build classes from an element tree.
-
-    Returns a dict mapping the id attributes of elements to the corresponding
-    generated classes.
-    """
-    if isinstance(tree, ET.Element):
-        root = tree
-    else:
-        root = tree.getroot()
-    idents = {}
-    check_interface(root)
-    for child in root:
-        if child.tag == 'object':
-            _build_class(child, idents)
-    return idents
 
 
 def _build_class(elt, cls_idents):
