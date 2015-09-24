@@ -5,6 +5,6 @@ setup(name='gtkclassbuilder',
       url='https://github.com/zenhack/python-gtkclassbuilder',
       packages=['gtkclassbuilder'],
       install_requires=[
-          'python-gobject>=3.16,<4.0',
+          'pygobject>=3.16,<4.0',
       ],
       )
