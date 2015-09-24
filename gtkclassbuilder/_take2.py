@@ -17,6 +17,10 @@ _property_overrides = {
         "vertical": Gtk.Orientation.VERTICAL,
         "horizontal": Gtk.Orientation.HORIZONTAL,
     }.get,
+    ('GtkButton', "relief"): {
+        "none": Gtk.ReliefStyle.NONE,
+        "normal": Gtk.ReliefStyle.NORMAL,
+    }.get,
 }
 
 logger = logging.getLogger(__name__)
