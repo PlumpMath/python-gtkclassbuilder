@@ -1,6 +1,7 @@
 import re
 import importlib
 import logging
+from ._check import interface as check_interface
 
 logger = logging.getLogger(__name__)
 
@@ -68,7 +69,7 @@ def build_classes(elt):
     Returns a dictionary mapping names (ids in the glade file) to classes.
     """
     idents = {}
-    assert elt.tag == 'interface'
+    check_interface(elt)
     do_interface(elt, idents)
     return idents
 
@@ -185,7 +186,6 @@ def do_child(elt, children, idents):
             obj_elt = xml_child
         elif xml_child.tag == 'packing':
             packing_elt = xml_child
-    assert obj_elt is not None
     obj_class = do_object(obj_elt)
 
     child_properties = {}
