@@ -58,21 +58,3 @@ def _build_class(elt, cls_idents):
     ResultClass.__name__ = elt.attrib['id']
     cls_idents[ResultClass.__name__] = ResultClass
     return ResultClass
-
-
-def _prop_key(elt):
-    """Return the name of the property represented by ``elt``."""
-    return elt.attrib['name']
-
-
-def _prop_val(elt):
-    """Return the value of the property represented by ``elt``."""
-    text = list(elt.itertext())[0]
-    if text == 'True':
-        return True
-    if text == 'False':
-        return False
-    try:
-        return int(text)
-    except ValueError:
-        return text

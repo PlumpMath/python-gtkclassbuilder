@@ -3,6 +3,22 @@ import importlib
 import logging
 from . import _check
 
+from gi.repository import Gtk
+
+# This is used by `property_value` to override the interpretation of specific
+# attributes that can't just be inferred like ints, strings, booleans...
+#
+# The keys are pairs (object_id, property_name), where ``object_id`` is the
+# corresponding <object>'s "id" attribute, and ``property_name`` is the name of
+# the property. The values are a function from the uninterpreted (string)
+# value of the property to the correct value.
+_property_overrides = {
+    ('GtkBox', "orientation"): {
+        "vertical": Gtk.Orientation.VERTICAL,
+        "horizontal": Gtk.Orientation.HORIZONTAL,
+    }.get,
+}
+
 logger = logging.getLogger(__name__)
 
 
@@ -96,19 +112,33 @@ def property_key(elt):
     return elt.attrib["name"]
 
 
-def property_value(elt):
+def property_value(elt, class_name=None):
     """Extract the value of the property from `elt`.
 
     :param elt: A ``<property>`` element representing the property.
+    :param class_name: The name of the class to which this property will be
+       applied. This acts as a hint when trying to infer the correct value.
 
     This will try to guess the type of the value, and cast it appropriately.
     """
     # TODO: We should check for a "translateable" attribute, and
     # internationalize the value as appropriate.
 
-    # TODO: We're not actually doing any guessing here, just returning the
-    # value as itself (a string). Try harder.
-    return elt.text
+    # See if we have an override:
+    if class_name is not None:
+        _override_key = (class_name, property_key(elt))
+        if _override_key in _property_overrides:
+            return _property_overrides[_override_key](elt.text)
+
+    # Try to guess the type:
+    if elt.text == 'True':
+        return True
+    if elt.text == 'False':
+        return False
+    try:
+        return int(elt.text)
+    except ValueError:
+        return elt.text
 
 
 # Each of the do_* functions takes two arguments:
@@ -151,7 +181,8 @@ def do_object(elt, idents):
 
     for xml_child in elt:
         if xml_child.tag == 'property':
-            properties[property_key(xml_child)] = property_value(xml_child)
+            properties[property_key(xml_child)] = \
+                property_value(xml_child, class_name=elt.attrib['class'])
         elif xml_child.tag == 'signal':
             logger.warn('Unimplemented element <signal> in <object>')
         elif xml_child.tag == 'child':
