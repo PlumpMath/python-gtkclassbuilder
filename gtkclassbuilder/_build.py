@@ -41,12 +41,13 @@ class _BuiltClass(object):
                                      objects=objects,
                                      object_id=object_id,
                                      properties=properties,
+                                     signals=signals,
                                      children=children)
 
     The extra arguments to `__init__` will typically be defined above.
     """
 
-    def __init__(self, objects, object_id, properties, children):
+    def __init__(self, objects, object_id, properties, signals, children):
         """Construct a new instance of the class.
 
         The constructor for the widget class must have already been invoked.
@@ -58,6 +59,8 @@ class _BuiltClass(object):
            :param objects:).
         :param properties: A dictionary mapping gobject property names to
            values. Each of these will be set on the newly created instance.
+        :param signals: A dictionary mapping names of signals to the names
+           of their handlers.
         :param children: A list of ``(child_class, child_properies)`` pairs,
             where ``child_class`` is a class satisfying the following
             constraints:
@@ -73,15 +76,50 @@ class _BuiltClass(object):
             self.set_property(k, v)
         objects[object_id] = self
         self.objects = objects
+        self.children = []
         for child_class, props in children:
             child = child_class(objects=objects)
+            self.children.append(child)
             self.add(child)
             for k, v in props.items():
                 self.child_set_property(child, k, v)
+        self.signals = signals
 
     def get_object(self, name):
         """Return the object specified by `name`."""
         return self.objects[name]
+
+    def connect_signals(self, handlers):
+        """Connect signals supplied by handlers to the widget.
+
+        This works quite similarly to the same method for `Gtk.Builder`. If
+        handlers is a dict, connect_signals will look for an element within
+        the dict which matches the handler name. Otherwise it will look for
+        an attribute by the appropriate name.
+
+        This connects signals to child objects recursively.
+        """
+        for name, handler_name in self.signals.items():
+            if _has_handler(handlers, handler_name):
+                self.connect(name, _get_handler(handlers, handler_name))
+        for child in self.children:
+            child.connect_signals(handlers)
+
+
+# _has_handler and _get_handler implement the dict vs non dict logic needed by
+# _BuiltClass.connect_signals.
+def _has_handler(handlers, name):
+    if type(handlers) is dict:
+        return name in handlers
+    else:
+        return hasattr(handlers, name)
+
+
+def _get_handler(handlers, name):
+    if type(handlers) is dict:
+        return handlers[name]
+    else:
+        return getattr(handlers, name)
 
 
 def build_classes(elt):
@@ -185,6 +223,7 @@ def do_object(elt, idents):
     object_id = elt.attrib['id']
 
     properties = {}
+    signals = {}
     children = []
 
     for xml_child in elt:
@@ -192,7 +231,7 @@ def do_object(elt, idents):
             properties[property_key(xml_child)] = \
                 property_value(xml_child, class_name=elt.attrib['class'])
         elif xml_child.tag == 'signal':
-            logger.warn('Unimplemented element <signal> in <object>')
+            signals[xml_child.attrib['name']] = xml_child.attrib['handler']
         elif xml_child.tag == 'child':
             do_child(elt=xml_child,
                      children=children,
@@ -208,6 +247,7 @@ def do_object(elt, idents):
                                  objects=objects,
                                  object_id=object_id,
                                  properties=properties,
+                                 signals=signals,
                                  children=children)
 
     result.__name__ = object_id
