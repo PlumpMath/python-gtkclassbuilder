@@ -18,16 +18,13 @@ glade files conform to the following restrictions:
       generate the class; everything else in the file is ignored.
     * Each ``<object>`` element must have a ``class`` attribute and an
       ``id`` attribute. The latter will be the name of the generated class,
-      which will inherit from the former. The ``class`` attribute must begin
-      with "Gtk", and therefore must be from the Gtk package. This has the
-      consequence that accessibility is not supported, though adding support
-      is considered a priority.
+      which will inherit from the former. The ``class`` attribute is expected
+      to be CapitalizedCamelCase, and its first word will be treated as the
+      module name.
     * Each ``<property>`` element must have a ``name`` attribute, and a
       single child, which must be text (not an element).
-    * Each ``<child>`` element's first child must be an ``<object>`` element.
-    * If a ``<child>`` has more than one child, the second child must be
-      ``<packing>`` element.
-    * ``<packing>`` elements may only contain ``<property>`` elements
+    * Each ``<child>`` element must contain a exactly one ``<object>`` element,
+      and one or zero ``<packing>`` elements.
     * Each ``signal`` element must have both a ``name`` and a ``handler``
       attribute. Signals are only interpreted when they are the children
       ``<object>`` elements.
