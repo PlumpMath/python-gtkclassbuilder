@@ -1,2 +1,7 @@
 * docs are a bit confusing when talking about the child elements of "<child>"
   elements; we should find a clearer way to talk about this.
+* We can't set the "model" property correctly; we need access to the dictionary
+  to do that. (specifies the name of an object).
+* Overrides currently need to be done on a per-class basis, but many classes
+  will have the same property with the same meaning. We should be able to set
+  global defaults.
