@@ -21,6 +21,18 @@ _property_overrides = {
         "none": Gtk.ReliefStyle.NONE,
         "normal": Gtk.ReliefStyle.NORMAL,
     }.get,
+    ('GtkLabel', "justify"): {
+        'left': Gtk.Justification.LEFT,
+        'right': Gtk.Justification.RIGHT,
+        'center': Gtk.Justification.CENTER,
+        'fill': Gtk.Justification.FILL,
+    }.get,
+    ('GtkTextView', "wrap_mode"): {
+        'none': Gtk.WrapMode.NONE,
+        'word': Gtk.WrapMode.WORD,
+        'char': Gtk.WrapMode.CHAR,
+        'word_char': Gtk.WrapMode.WORD_CHAR,
+    }.get,
 }
 
 logger = logging.getLogger(__name__)
