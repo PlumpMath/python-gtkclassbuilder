@@ -5,34 +5,25 @@ from . import _check
 
 from gi.repository import Gtk
 
+def _get_const_fn(enum):
+    """Helper for constructing _property_overrides."""
+    return lambda value: getattr(enum, value.upper())
+
+
 # This is used by `property_value` to override the interpretation of specific
 # attributes that can't just be inferred like ints, strings, booleans...
 #
-# The keys are pairs (object_id, property_name), where ``object_id`` is the
-# corresponding <object>'s "id" attribute, and ``property_name`` is the name of
-# the property. The values are a function from the uninterpreted (string)
-# value of the property to the correct value.
+# The keys are the names of properties. The values are callables mapping the
+# (uninterpreted) string values to their correct run-time values. If the the
+# values in this dictionary themselves return callables, those callables will
+# be invoked with the objects dictionary when the objects are actually
+# constructed, and the return value will be used as the value.
 _property_overrides = {
-    ('GtkBox', "orientation"): {
-        "vertical": Gtk.Orientation.VERTICAL,
-        "horizontal": Gtk.Orientation.HORIZONTAL,
-    }.get,
-    ('GtkButton', "relief"): {
-        "none": Gtk.ReliefStyle.NONE,
-        "normal": Gtk.ReliefStyle.NORMAL,
-    }.get,
-    ('GtkLabel', "justify"): {
-        'left': Gtk.Justification.LEFT,
-        'right': Gtk.Justification.RIGHT,
-        'center': Gtk.Justification.CENTER,
-        'fill': Gtk.Justification.FILL,
-    }.get,
-    ('GtkTextView', "wrap_mode"): {
-        'none': Gtk.WrapMode.NONE,
-        'word': Gtk.WrapMode.WORD,
-        'char': Gtk.WrapMode.CHAR,
-        'word_char': Gtk.WrapMode.WORD_CHAR,
-    }.get,
+    "model": lambda value: lambda objects: objects[value],
+    "orientation": _get_const_fn(Gtk.Orientation),
+    "relief": _get_const_fn(Gtk.ReliefStyle),
+    "justify": _get_const_fn(Gtk.Justification),
+    "wrap_mode": _get_const_fn(Gtk.WrapMode),
 }
 
 logger = logging.getLogger(__name__)
@@ -71,6 +62,8 @@ class _BuiltClass(object):
            :param objects:).
         :param properties: A dictionary mapping gobject property names to
            values. Each of these will be set on the newly created instance.
+           If the value is a callable, the property will be set to the result
+           of calling it with :param objects: as a parameter.
         :param signals: A dictionary mapping names of signals to the names
            of their handlers.
         :param children: A list of ``(child_class, child_properies)`` pairs,
@@ -85,6 +78,8 @@ class _BuiltClass(object):
         if objects is None:
             objects = {}
         for k, v in properties.items():
+            if callable(v):
+                v = v(objects)
             self.set_property(k, v)
         objects[object_id] = self
         self.objects = objects
@@ -94,6 +89,8 @@ class _BuiltClass(object):
             self.children.append(child)
             self.add(child)
             for k, v in props.items():
+                if callable(v):
+                    v = v(objects)
                 self.child_set_property(child, k, v)
         self.signals = signals
 
@@ -183,10 +180,8 @@ def property_value(elt, class_name=None):
     # internationalize the value as appropriate.
 
     # See if we have an override:
-    if class_name is not None:
-        _override_key = (class_name, property_key(elt))
-        if _override_key in _property_overrides:
-            return _property_overrides[_override_key](elt.text)
+    if property_key(elt) in _property_overrides:
+        return _property_overrides[property_key(elt)](elt.text)
 
     # Try to guess the type:
     if elt.text == 'True':

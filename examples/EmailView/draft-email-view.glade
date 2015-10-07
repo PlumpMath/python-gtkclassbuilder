@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.16.1 -->
+<interface>
+  <requires lib="gtk+" version="3.10"/>
+  <object class="GtkListStore" id="attachment_list">
+    <columns>
+      <!-- column-name icon -->
+      <column type="GdkPixbuf"/>
+      <!-- column-name label -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0"/>
+        <col id="1" translatable="yes">Icon1</col>
+      </row>
+      <row>
+        <col id="0"/>
+        <col id="1" translatable="yes">Icon2</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkWindow" id="draft-email-view">
+    <property name="width_request">680</property>
+    <property name="height_request">500</property>
+    <property name="can_focus">False</property>
+    <property name="title" translatable="yes">Email Viewer</property>
+    <property name="icon_name">evolution</property>
+    <child>
+      <object class="GtkBox" id="holder">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="margin_left">2</property>
+        <property name="margin_right">3</property>
+        <property name="margin_top">2</property>
+        <property name="margin_bottom">2</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkBox" id="from_box">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkLabel" id="from_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
+                <property name="label" translatable="yes">From:</property>
+                <property name="justify">right</property>
+                <property name="width_chars">10</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="padding">4</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="from">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="xalign">0</property>
+                <property name="xpad">2</property>
+                <property name="ypad">3</property>
+                <property name="label" translatable="yes">&lt;a href="doctormo@gmail.com" title="Our website"&gt;Martin Owens &amp;lt;doctormo@gmail.com&amp;gt;&lt;/a&gt;</property>
+                <property name="use_markup">True</property>
+                <property name="wrap">True</property>
+                <property name="selectable">True</property>
+                <signal name="activate-link" handler="email_link" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="padding">2</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox" id="cc_box">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <child>
+              <object class="GtkLabel" id="cc_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="xalign">0</property>
+                <property name="label" translatable="yes">CC:</property>
+                <property name="justify">right</property>
+                <property name="width_chars">10</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="padding">4</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="cc">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="xalign">0</property>
+                <property name="xpad">2</property>
+                <property name="ypad">3</property>
+                <property name="label" translatable="yes">&lt;a href="doctormo@gmail.com" title="Our website"&gt;Martin Owens &amp;lt;doctormo@gmail.com&amp;gt;&lt;/a&gt;</property>
+                <property name="use_markup">True</property>
+                <property name="wrap">True</property>
+                <property name="selectable">True</property>
+                <signal name="activate-link" handler="email_link" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="padding">2</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSeparator" id="header_seperator">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_top">4</property>
+            <property name="margin_bottom">1</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="subject">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="xalign">0</property>
+            <property name="xpad">4</property>
+            <property name="ypad">6</property>
+            <property name="label" translatable="yes">This is the subject of the email here.</property>
+            <property name="selectable">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSeparator" id="body_seperator">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_top">1</property>
+            <property name="margin_bottom">4</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkTextView" id="body">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="has_focus">True</property>
+            <property name="editable">False</property>
+            <property name="wrap_mode">word</property>
+            <property name="cursor_visible">False</property>
+          </object>
+          <packing>
+            <property name="expand">True</property>
+            <property name="fill">True</property>
+            <property name="padding">2</property>
+            <property name="position">5</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkSeparator" id="attachment_seperator">
+            <property name="can_focus">False</property>
+            <property name="margin_top">4</property>
+            <property name="margin_bottom">4</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">6</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkIconView" id="attachments">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="tooltip_text" translatable="yes">Email Attachments, double click to open.</property>
+            <property name="margin">6</property>
+            <property name="item_orientation">horizontal</property>
+            <property name="model">attachment_list</property>
+            <property name="activate_on_single_click">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">7</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+  </object>
+</interface>
