@@ -37,7 +37,7 @@ Unless otherwise specified, any additional elements and/or attributes will
 be ignored, and a warning will be logged.
 """
 
-from . import _build
+from .builder import Builder
 import xml.etree.ElementTree as ET
 
 
@@ -51,7 +51,9 @@ def _from_tree(tree):
         root = tree
     else:
         root = tree.getroot()
-    return _build.build_classes(root)
+    result = Builder()
+    result._from_root(root)
+    return result
 
 
 def from_string(input):

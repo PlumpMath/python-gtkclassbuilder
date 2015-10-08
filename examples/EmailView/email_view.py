@@ -3,16 +3,13 @@ from gtkclassbuilder import from_filename
 from gi.repository import Gtk
 from os import path
 
-classes = from_filename(path.join(path.dirname(__file__),
+builder = from_filename(path.join(path.dirname(__file__),
                                   'draft-email-view.glade'))
 
 
 def build_email_view(from_, cc, subject, body):
 
-    builder = Gtk.Builder()
-    builder.add_from_file('draft-email-view.glade')
-
-    email_view = classes['draft-email-view']()
+    email_view = builder.make_object('draft-email-view')
 
     def _set_obj_label(name, value):
         widget = email_view.get_object(name)

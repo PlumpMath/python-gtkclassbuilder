@@ -2,11 +2,9 @@ from gtkclassbuilder import from_filename
 from gi.repository import Gtk
 from os import path
 
-classes = from_filename(path.join(path.dirname(__file__), 'hello.glade'))
-cls = classes['MainWindow']
-
-w1 = cls()
-w2 = cls()
+builder = from_filename(path.join(path.dirname(__file__), 'hello.glade'))
+w1 = builder.make_object('MainWindow')
+w2 = builder.make_object('MainWindow')
 
 
 class Handlers(object):

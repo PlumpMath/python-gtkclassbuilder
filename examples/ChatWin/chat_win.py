@@ -2,18 +2,17 @@ from gtkclassbuilder import from_filename
 from gi.repository import Gtk
 from os import path
 
-classes = from_filename(path.join(path.dirname(__file__), 'ChatWin.glade'))
+builder = from_filename(path.join(path.dirname(__file__), 'ChatWin.glade'))
 
 
-class MainWin(classes['ChatWin']):
+class Handlers(object):
 
-    def __init__(self, *args, **kwargs):
-        super(MainWin, self).__init__(*args, **kwargs)
-        self.connect_signals(self)
+    def __init__(self, win):
+        self.win = win
 
     def send(self, *args, **kwargs):
-        log = self.get_object('Log')
-        compose = self.get_object('Compose')
+        log = self.win.get_object('Log')
+        compose = self.win.get_object('Compose')
         buf = log.get_buffer()
         buf.insert(buf.get_end_iter(), compose.get_text() + '\n')
         compose.set_text('')
@@ -22,6 +21,7 @@ class MainWin(classes['ChatWin']):
         Gtk.main_quit()
 
 
-w = MainWin()
+w = builder.make_object('ChatWin')
+w.connect_signals(Handlers(w))
 w.show_all()
 Gtk.main()
