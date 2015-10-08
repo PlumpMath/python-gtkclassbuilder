@@ -13,9 +13,6 @@ Limitations
 Gtk Builder file format. To date, ``gtkclassbuilder`` requires that
 glade files conform to the following restrictions:
 
-    * The root ``<interface>`` element must have at least one ``<object>``
-      element child. The first ``<object>`` child will be used to
-      generate the class; everything else in the file is ignored.
     * Each ``<object>`` element must have a ``class`` attribute and an
       ``id`` attribute. The latter will be the name of the generated class,
       which will inherit from the former. The ``class`` attribute is expected
