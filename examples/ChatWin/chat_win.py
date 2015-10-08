@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 from gtkclassbuilder import from_filename
 from gi.repository import Gtk
 from os import path
