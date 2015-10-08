@@ -13,10 +13,12 @@ logger = logging.getLogger(__name__)
 class BuiltObject(object):
 
     def __init__(self, _builder, _objects):
+        if _objects is None:
+            _objects = {}
         for prop in self._properties:
             prop.set(self, _builder, _objects)
         for child_class_name in self._children:
-            child = _builder._classes[child_class_name](_builder, _objects)
+            child = _builder[child_class_name](_objects)
             self.add(child)
             for prop in child._child_properties:
                 prop.set_child(self, child, _builder, _objects)
@@ -67,7 +69,7 @@ class Property(object):
             # that it hasn't been created yet. If so, we need to make it
             # first.
             if self._value not in _objects:
-                _builder.make_object(self._value, _objects)
+                _builder[self._value](_objects)
             return _objects[self._value]
 
         if self.key in self._enums:
@@ -90,15 +92,7 @@ class Property(object):
             return self._value
 
 
-class Builder(object):
-
-    def __init__(self):
-        self._classes = {}
-
-    def make_object(self, class_name, _objects=None):
-        if _objects is None:
-            _objects = {}
-        return self._classes[class_name](_builder=self, _objects=_objects)
+class Builder(dict):
 
     def _from_root(self, elt):
         _check.interface(elt)
@@ -126,11 +120,11 @@ class Builder(object):
             self._do_child(elt=xml_child,
                            children=children)
 
-        def _result_init(_obj_self, _builder, _objects):
+        def _result_init(_obj_self, _objects=None):
             parent_class.__init__(_obj_self)
-            BuiltObject.__init__(_obj_self, _builder, _objects)
+            BuiltObject.__init__(_obj_self, _builder=self, _objects=_objects)
 
-        self._classes[ident] = type(ident, (parent_class, BuiltObject), {
+        self[ident] = type(ident, (parent_class, BuiltObject), {
             '__init__': _result_init,
             '_properties': properties,
             '_signals': signals,
@@ -150,6 +144,6 @@ class Builder(object):
                 child_properties.append(Property(xml_child))
 
         child_class_name = obj_elt.attrib["id"]
-        child = self._classes[child_class_name]
+        child = self[child_class_name]
         child._child_properties = child_properties
         children.append(child_class_name)

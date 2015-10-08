@@ -45,17 +45,14 @@ input = """<?xml version="1.0" encoding="UTF-8"?>
 </interface>
 """
 
-builder = from_string(input)
-w = builder.make_object('MainWindow')
+classes = from_string(input)
+w = classes['MainWindow']()
 
 assert isinstance(w, Gtk.Window)
 assert w.get_object('MainWindow') is w
+assert isinstance(w.get_object('box1'), classes['box1'])
 
-# We're peeking into the object for this one, so it's testing more than just
-# the API:
-assert isinstance(w.get_object('box1'), builder._classes['box1'])
-
-w2 = builder.make_object('MainWindow')
+w2 = classes['MainWindow']()
 
 assert w is not w2
 assert w.get_object('box1') is not w2.get_object('box1')
