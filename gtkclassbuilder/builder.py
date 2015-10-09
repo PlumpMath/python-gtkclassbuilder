@@ -157,6 +157,12 @@ class Builder(dict):
         for xml_child in elt.findall('./signal'):
             signals[xml_child.attrib['name']] = xml_child.attrib['handler']
         for xml_child in elt.findall('./child'):
+            if 'internal-child' in xml_child.attrib:
+                # (ISD): It's really unclear to me what internal children are
+                # supposed to do; it seems to be wrapped up with the
+                # Gtk.Buildable interface, and I don't know that we can really
+                # make use of them.  For now we just skip them entirely.
+                continue
             self._do_child(elt=xml_child,
                            children=children)
 

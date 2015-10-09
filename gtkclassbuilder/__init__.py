@@ -32,6 +32,11 @@ what a valid ``.glade`` file may contain.
 
 Unless otherwise specified, any additional elements and/or attributes will
 be ignored, and a warning will be logged.
+
+The following constructs will be recognized but ignored (Some of these may be
+supported in the future):
+
+    * ``<child>`` elements with an "internal-child" attribute.
 """
 
 from .builder import Builder
