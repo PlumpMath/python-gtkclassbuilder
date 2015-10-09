@@ -36,6 +36,7 @@ be ignored, and a warning will be logged.
 
 from .builder import Builder
 import xml.etree.ElementTree as ET
+import sys
 
 
 def _from_tree(tree):
@@ -69,3 +70,42 @@ def from_filename(filename):
     generated classes.
     """
     return _from_tree(ET.parse(filename))
+
+
+class _ModuleProxy(object):
+    """Helper class for the implementation of "replace_module".
+
+    replace module replaces the underlying module in `sys.modules` with an
+    instance of this class.
+    """
+
+    def __init__(self, module):
+        gladefile = module.__file__.replace('.py', '.glade')
+        self.builder = from_filename(gladefile)
+
+    def __getattr__(self, name):
+        try:
+            return self.builder[name]
+        except KeyError:
+            raise AttributeError
+
+
+def replace_module(name):
+    """Replace the module `name` with the result of parsing a glade file.
+
+    Example usage:
+
+        >>> # foo.py
+        >>> from gtkbuilder import replace_module
+        >>> replace_module(__name__)
+
+    The above will read ``foo.glade``, and swap out the module foo with an
+    object whose attributes are the classes read by gtkclassbuilder:
+
+        >>> # bar.py
+        >>> from foo import MainWindow, MyWidget
+        >>> # ...
+    """
+    module = sys.modules[name]
+    proxy = _ModuleProxy(module)
+    sys.modules[name] = proxy
