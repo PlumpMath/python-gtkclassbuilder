@@ -78,6 +78,7 @@ class Property(object):
         "orientation": Gtk.Orientation,
         "justify": Gtk.Justification,
         "relief": Gtk.ReliefStyle,
+        "shadow_type": Gtk.ShadowType,
         "wrap_mode": Gtk.WrapMode,
     }
 
