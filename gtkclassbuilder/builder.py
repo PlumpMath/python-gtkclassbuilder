@@ -82,6 +82,12 @@ class Property(object):
         "wrap_mode": Gtk.WrapMode,
     }
 
+    _references = set([
+        "buffer",
+        "image",
+        "model",
+    ])
+
     def __init__(self, elt):
         self.key = elt.attrib['name']
         # TODO: We should check for a "translateable" attribute, and
@@ -89,7 +95,10 @@ class Property(object):
         self._value = elt.text
 
     def set(self, object, _builder, _objects):
-        object.set_property(self.key, self._get_value(_builder, _objects))
+        try:
+            object.set_property(self.key, self._get_value(_builder, _objects))
+        except TypeError:
+            import pdb; pdb.set_trace()
 
     def set_child(self, parent, child, _builder, _objects):
         parent.child_set_property(child,
@@ -97,8 +106,8 @@ class Property(object):
                                   self._get_value(_builder, _objects))
 
     def _get_value(self, _builder, _objects):
-        if self.key == "model":
-            # model refers to another object in the glade file by it's id.
+        if self.key in self._references:
+            # a reference refers to another object in the glade file by it's id.
             # We want to fetch that object out of _objects, but it's possible
             # that it hasn't been created yet. If so, we need to make it
             # first.
